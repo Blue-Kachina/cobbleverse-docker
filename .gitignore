@@ -1,0 +1,84 @@
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependencies
+/node_modules/
+/vendor/
+/bower_components/
+/.pnp
+.pnp.js
+
+# Build outputs
+/dist/
+/build/
+/out/
+/target/
+*.class
+*.jar
+*.war
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Coverage and test reports
+/coverage/
+/.nyc_output/
+/junit.xml
+/.phpunit.cache/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Cache directories
+.cache/
+.npm/
+.eslintcache
+
+# Local Resources
+resources/dev

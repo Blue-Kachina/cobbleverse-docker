@@ -1,0 +1,75 @@
+# Sensitive data and credentials
+.env*
+secrets.json
+*_key.json
+*_credentials.json
+auth.json
+config.json
+
+# Large binary files and datasets
+*.bin
+*.h5
+*.pkl
+*.model
+*.onnx
+*.pt
+*.pth
+*.tfrecord
+/datasets/
+/data/
+/models/
+
+# AI model checkpoints and weights
+/checkpoints/
+/weights/
+*.checkpoint
+*.weights
+/runs/
+/wandb/
+
+# Generated AI content
+/generated/
+*_generated.*
+*_synthetic.*
+/predictions/
+/outputs/
+
+# Training logs and metrics
+/logs/
+/tensorboard/
+metrics.json
+training_logs.txt
+evaluation_results.csv
+
+# Cached embeddings and features
+/embeddings/
+/features/
+*_embeddings.*
+*_features.*
+/cache/
+
+# Development and debugging artifacts
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.log
+
+# Large media files that might be used in AI training
+*.mp4
+*.avi
+*.mov
+*.wav
+*.mp3
+*.png
+*.jpg
+*.jpeg
+*.gif
+/images/
+/audio/
+/video/
+
+# Documentation and temporary files
+/docs/generated/
+/tmp/
+*.tmp
+*~
