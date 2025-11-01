@@ -35,11 +35,43 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
    - Set `SERVER_WORLDNAME` to your desired world name
    - Configure `SERVER_NAME` and `SERVER_MOTD` to personalize your server
    - Adjust other settings as needed
+   - Optionally set `MEMORY=6G` (or 8G) depending on your host; default is 6G in compose
+   - For Phase 1 (vanilla boot), keep `MODRINTH_URL` commented or removed; enable it in Phase 2
 
 4. Start the server:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
+
+5. View logs and confirm startup:
+   ```bash
+   docker compose logs -f mc
+   ```
+
+If you see the server reach "Done" without errors, Phase 1 acceptance criteria are met.
+
+## Phase 2 — Modpack Acquisition via Modrinth
+
+1. Open .env and ensure the MODRINTH_URL line is present and uncommented. The example value provided points to COBBLEVERSE 1.6.
+2. Start (or restart) the server to trigger the installer:
+   ```bash
+   docker compose up -d
+   ```
+   - On first run with MODRINTH_URL enabled, the container will download and install the modpack. This can take several minutes depending on your connection.
+3. Tail logs and wait for completion:
+   ```bash
+   docker compose logs -f mc
+   ```
+   - Look for messages showing Modrinth pack download, mods installation, and server startup.
+   - With the included settings, the installer will:
+     - Cache downloads for faster rebuilds (USE_MODPACK_CACHE=true)
+     - Remove outdated jars on updates (REMOVE_OLD_MODS=true)
+     - Apply env-driven server.properties (OVERRIDE_SERVER_PROPERTIES=true)
+4. Validate results:
+   - /data/mods and /data/config should be populated inside the data directory.
+   - Logs should reach the "Done" state without fatal errors.
+
+If all of the above checks pass, Phase 2 acceptance criteria are met.
 
 ## Configuration
 

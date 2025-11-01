@@ -82,3 +82,7 @@ Thumbs.db
 
 # Local Resources
 resources/dev
+
+# Minecraft data directories (do not commit worlds or backups)
+/data/
+/backups/
