@@ -41,7 +41,17 @@ set_perm_dir() {
 
 # Apply to /data and /backups if mounted
 set_perm_dir "/data"
-set_perm_dir "/backups"
+# On some hosts (Docker Desktop/WSL2/NTFS), enforcing 770 on bind-mounted ./backups can prevent
+# the backup sidecar from writing. Relax backups dir to 0777 to maximize compatibility;
+# the sidecar will still create files using its own umask.
+if [ -d "/backups" ]; then
+  if [ -w "/backups" ]; then
+    chmod 777 "/backups" 2>/dev/null || true
+    log "[init:perms] Set permissive permissions on backups (0777) for cross-platform compatibility"
+  else
+    log "[init:perms] Skipping /backups (not writable by current UID)"
+  fi
+fi
 
 # Encourage restrictive umask for processes launched later in this session
 # This won't affect the already-running JVM, but may help other init hooks.

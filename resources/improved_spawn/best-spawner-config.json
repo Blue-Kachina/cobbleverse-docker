@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "replaceWithNewVersion": true,
+  "contextWeights": {
+    "grounded": 1.0,
+    "submerged": 1.0,
+    "surface": 1.0
+  },
+  "buckets": [
+    {
+      "name": "common",
+      "weight": 82
+    },
+    {
+      "name": "uncommon",
+      "weight": 15
+    },
+    {
+      "name": "rare",
+      "weight": 2
+    },
+    {
+      "name": "ultra-rare",
+      "weight": 1
+    }
+  ],
+  "debug": {
+    "logSpawnAttempts": true,
+    "logFailedAttempts": true
+  }
+}

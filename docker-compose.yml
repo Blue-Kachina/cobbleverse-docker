@@ -64,14 +64,24 @@ services:
     image: itzg/mc-backup:latest
     container_name: "${SERVER_NAME:-cobbleverse-server-backup}-backup"
     restart: unless-stopped
+    # Run as root to ensure write access to host-mounted ./backups on all platforms
+    # (mc container still runs as non-root UID/GID for data directory security)
+    user: "0:0"
     depends_on:
       - mc
+    env_file:
+      - .env
     environment:
       TZ: "${TZ:-UTC}"
       BACKUP_INTERVAL: "${BACKUP_INTERVAL:-24h}"
       PRUNE_BACKUPS_DAYS: "${BACKUP_PRUNE_DAYS:-14}"
       # Use tar archives in /backups; include world and configs under /data
       BACKUP_METHOD: tar
+      # RCON settings so backup can quiesce the server during snapshots
+      RCON_HOST: mc
+      RCON_PORT: 25575
+      # Pass through the same password used by the mc service; when empty, rcon is disabled
+      RCON_PASSWORD: "${RCON_PASSWORD:-}"
     volumes:
       - ./data:/data:ro
       - ./backups:/backups
