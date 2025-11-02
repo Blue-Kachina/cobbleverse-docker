@@ -10,8 +10,9 @@ ICON_URL="${SERVER_ICON:-}"
 FORCE_UPDATE="${SERVER_ICON_UPDATE:-}"
 TARGET="/data/server-icon.png"
 
-# No URL provided; exit quietly
+# No URL provided; exit quietly (but log for transparency)
 if [ -z "$ICON_URL" ]; then
+  echo "[init:icon] SERVER_ICON not set; skipping"
   exit 0
 fi
 
@@ -81,14 +82,28 @@ if [ "$convert_ok" -eq 1 ]; then
   exit 0
 fi
 
-# Fallback: if URL appears to be a PNG, use it as-is; else warn and DO NOT overwrite with a non-PNG
+# Helper: detect if a file is a PNG by magic bytes, independent of URL extension
+is_png_by_magic() {
+  sig="$(dd if="$1" bs=1 count=8 2>/dev/null | hexdump -v -e '8/1 "%02X"')" || sig=""
+  [ "$sig" = "89504E470D0A1A0A" ]
+}
+
+# Fallbacks when conversion tools are unavailable
+if is_png_by_magic "$TMP_ICON"; then
+  # We cannot guarantee 64x64 without ImageMagick, but save as-is so at least PNG icons work
+  mv -f "$TMP_ICON" "$TARGET"
+  echo "[init:icon] Saved server icon from PNG content to $(basename "$TARGET")"
+  exit 0
+fi
+
+# Final fallback: trust URL extension if .png
 case "$ICON_URL" in
   *.png|*.PNG)
     mv -f "$TMP_ICON" "$TARGET"
-    echo "[init:icon] Saved server icon (assumed PNG) to $(basename "$TARGET")"
+    echo "[init:icon] Saved server icon (assumed PNG by URL) to $(basename "$TARGET")"
     ;;
   *)
     rm -f "$TMP_ICON" 2>/dev/null || true
-    echo "[init:icon] WARN: Did not save icon because conversion tools are unavailable and the URL is not a PNG. Provide a 64x64 PNG URL or install ImageMagick (magick/convert) in the image to enable auto-conversion."
+    echo "[init:icon] WARN: Could not convert non-PNG icon (no ImageMagick). Provide a direct 64x64 PNG URL in SERVER_ICON or install ImageMagick (magick/convert) in the image."
     ;;
 fi
