@@ -1,29 +1,53 @@
+# Cobbleverse Docker Compose
+# Version: 1.0.0 (2025-11-01)
 services:
   mc:
     image: itzg/minecraft-server:latest
     container_name: cobbleverse-server
     restart: unless-stopped
     ports:
-      - "25565:25565"
+      - "25565:25565" #Minecraft
+      - "25575:25575" #Rcon
+
     volumes:
       - ./data:/data
       - ./backups:/backups
+      - ./scripts/init:/data/init
     env_file:
       - .env
     environment:
-      # Required to run the server
       EULA: "TRUE"
-      # Cobbleverse 1.6 uses Fabric
-      TYPE: "FABRIC"
-      # Helpful JVM tuning flags from Aikar
+      TYPE: "MODRINTH"
       USE_AIKAR_FLAGS: "true"
-      # Memory recommendation for Cobblemon-heavy packs; can be overridden in .env
-      MEMORY: "${MEMORY:-6G}"
-      # Phase 2: Modrinth modpack installer settings
-      # Set MODRINTH_URL in your .env to enable automatic modpack install
+      MEMORY: "${MEMORY:-8G}"
+      MODRINTH_MODPACK: "${MODRINTH_MODPACK:-}"
+      MODRINTH_URL: "${MODRINTH_URL:-}"
+      GENERIC_PACK: "${GENERIC_PACK:-}"
+      MODRINTH_PROJECT: "${MODRINTH_PROJECT:-Jkb29YJU}"
+      MODRINTH_VERSION: "${MODRINTH_VERSION:-}"
+      MODRINTH_DOWNLOAD_OPTIONAL_DEPENDENCIES: "true"
       USE_MODPACK_CACHE: "true"
       REMOVE_OLD_MODS: "true"
       OVERRIDE_SERVER_PROPERTIES: "true"
+      MOTD: "${SERVER_MOTD:-}"
+      DEBUG: "true"
+      TZ: "${TZ:-UTC}"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+
+      ENABLE_AUTOPAUSE: "false"
+      ENABLE_AUTOSTOP: "false"
+      JVM_OPTS: "${JVM_OPTS:-}"
+      RESTART_ON_CRASH: "${RESTART_ON_CRASH:-}"
+      MAX_TICK_TIME: "${MAX_TICK_TIME:-}"
+      ENABLE_ROLLING_LOGS: "true"
+      STOP_SERVER_ANNOUNCE_DELAY: "${STOP_SERVER_ANNOUNCE_DELAY:-15}"
+      # RCON is enabled when a password is provided
+      RCON_PASSWORD: "${RCON_PASSWORD:-}"
+    labels:
+      - "com.cobbleverse.project=mc_cobbleverse"
+      - "com.cobbleverse.version=1.0.0"
+      - "com.cobbleverse.phase=10"
     # Uncomment if you want simple health insight later (Phase 7+)
     # healthcheck:
     #   test: ["CMD", "/usr/lib/mc-monitor", "status", "--host", "localhost", "--port", "25565"]
@@ -31,4 +55,19 @@ services:
     #   timeout: 10s
     #   retries: 5
 
-# Networks/extra settings can be added in later phases as needed
+  mc-backup:
+    image: itzg/mc-backup:latest
+    container_name: cobbleverse-backup
+    restart: unless-stopped
+    depends_on:
+      - mc
+    environment:
+      TZ: "${TZ:-UTC}"
+      BACKUP_INTERVAL: "${BACKUP_INTERVAL:-24h}"
+      PRUNE_BACKUPS_DAYS: "${BACKUP_PRUNE_DAYS:-14}"
+      # Use tar archives in /backups; include world and configs under /data
+      BACKUP_METHOD: tar
+    volumes:
+      - ./data:/data:ro
+      - ./backups:/backups
+
