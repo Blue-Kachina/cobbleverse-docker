@@ -50,6 +50,13 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
 
 ## Configuration
 
+### Init scripts (scripts/init)
+- Place shell scripts in scripts\init on the host. They are mounted into the container at /data/init.d.
+- On container start, every executable script in /data/init.d is run in alphanumeric order before the Minecraft server starts.
+- You will see lines like "[init] running /data/init.d/00-verify-init.sh" and any echo output from your scripts in Docker Desktop logs or via docker compose logs -f mc.
+- A helper script 00-verify-init.sh is included; it also writes a persistent log to ./data/logs/init-hooks.log.
+- Note: The container’s /data/init or /data/container-init.d directories may appear empty in the host ./data folder if you are not mounting them directly; this is expected. Your scripts live in scripts\init on the host and are bind-mounted into /data/init.d at runtime.
+
 ### Environment Variables
 
 | Variable | Description | Default |
