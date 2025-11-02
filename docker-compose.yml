@@ -13,6 +13,8 @@ services:
       - ./data:/data
       - ./backups:/backups
       - ./scripts/init:/data/container-init.d
+    # Ensure init scripts are executable (on Windows/WSL the +x bit can be lost)
+    entrypoint: ["/bin/sh", "-c", "chmod +x /data/container-init.d/* 2>/dev/null || true; exec /start"]
     env_file:
       - .env
     environment:
