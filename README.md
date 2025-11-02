@@ -57,7 +57,7 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
 | SERVER_WORLDNAME | The name of your Minecraft world | YOUR_WORLDNAME_SHOULD_BE_ONE_WORD |
 | SERVER_NAME | Server name shown in the server browser | Cobbleverse |
 | SERVER_MOTD | Message of the day displayed under the server name | Welcome to Cobbleverse! |
-| SERVER_ICON | URL to a 64x64 PNG used as server icon (auto-downloaded) | - |
+| SERVER_ICON | URL to an image used as server icon. If ImageMagick is available, it will be converted to a 64x64 PNG automatically; otherwise provide a 64x64 PNG URL. | - |
 | ALLOW_FLIGHT | Whether flying is allowed | true |
 | SPAWN_MONSTERS | Whether monsters will spawn | false |
 | DIFFICULTY | peaceful|easy|normal|hard | normal |
