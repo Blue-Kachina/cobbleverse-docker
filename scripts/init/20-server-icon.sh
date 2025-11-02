@@ -6,16 +6,25 @@
 
 set -eu
 
+# Ensure we also log to persistent file
+LOG_DIR="/data/logs"
+LOG_FILE="$LOG_DIR/init-hooks.log"
+mkdir -p "$LOG_DIR"
+log() {
+  echo "$1"
+  echo "$1" >> "$LOG_FILE" 2>&1
+}
+
 TARGET="/data/server-icon.png"
 ICON_VAL="${ICON:-}"
 SERVER_ICON_VAL="${SERVER_ICON:-}"
 
 if [ -n "$ICON_VAL" ]; then
-  echo "[init:icon] ICON is set ($ICON_VAL); base image will manage $TARGET"
+  log "[init:icon] ICON is set ($ICON_VAL); base image will manage $TARGET"
 elif [ -n "$SERVER_ICON_VAL" ]; then
-  echo "[init:icon] SERVER_ICON is set ($SERVER_ICON_VAL); compose maps it to ICON and the base image will manage $TARGET"
+  log "[init:icon] SERVER_ICON is set ($SERVER_ICON_VAL); compose maps it to ICON and the base image will manage $TARGET"
 else
-  echo "[init:icon] No icon configured; skipping (set SERVER_ICON to a URL to enable)"
+  log "[init:icon] No icon configured; skipping (set SERVER_ICON to a URL to enable)"
 fi
 
 exit 0

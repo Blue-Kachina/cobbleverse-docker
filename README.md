@@ -51,11 +51,21 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
 ## Configuration
 
 ### Init scripts (scripts/init)
-- Place shell scripts in scripts\init on the host. They are mounted into the container at /data/init.d.
-- On container start, every executable script in /data/init.d is run in alphanumeric order before the Minecraft server starts.
-- You will see lines like "[init] running /data/init.d/00-verify-init.sh" and any echo output from your scripts in Docker Desktop logs or via docker compose logs -f mc.
+- Place shell scripts in scripts\init on the host. They are mounted into the container at /container-init.d.
+- On container start, our compose entrypoint executes every executable script in /container-init.d in alphanumeric order before handing off to the base image's /start. This ensures scripts run exactly once even if /data/container-init.d becomes empty or invisible during the modpack install phase.
+- You will see lines like "[compose:init] running /container-init.d/00-verify-init.sh" and any echo output from your scripts in Docker Desktop logs or via `docker compose logs -f mc`.
 - A helper script 00-verify-init.sh is included; it also writes a persistent log to ./data/logs/init-hooks.log.
-- Note: The container’s /data/init or /data/container-init.d directories may appear empty in the host ./data folder if you are not mounting them directly; this is expected. Your scripts live in scripts\init on the host and are bind-mounted into /data/init.d at runtime.
+- Note: The host folder ./data/container-init.d (or ./data/init.d) may appear empty — that is expected, because scripts live in ./scripts/init and are bind-mounted into /container-init.d at runtime.
+
+### Troubleshooting init scripts
+- To verify the container sees them, run: `docker compose exec mc ls -l /container-init.d`. If it's empty, ensure your host scripts are in `./scripts/init`, recreate the container (`docker compose up -d --force-recreate`), and confirm they are executable.
+- If ./data/init.d is empty on the host: this is normal; the scripts are in ./scripts/init on the host.
+- Ensure scripts are executable. The compose file sets permissions on container start, but on Windows/WSL git may drop +x. You can also run `git update-index --chmod=+x scripts/init/*.sh`.
+- init-hooks.log is created only after a container start when scripts exist. If it’s missing, restart: `docker compose restart mc` (or `up -d` after stopping).
+- You will also see diagnostic lines added by compose entrypoint:
+  - "[compose:init] listing /container-init.d"
+  - "[compose:init] found N .sh files in /container-init.d"
+  - "[compose:init] running <path>" for each script executed before handing off to the base image.
 
 ### Environment Variables
 

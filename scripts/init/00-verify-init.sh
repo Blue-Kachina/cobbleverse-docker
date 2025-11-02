@@ -16,7 +16,6 @@ echo "$msg"
 # Also write to persistent log file
 {
   echo "$msg"
-  echo "[init:verify] $(now) ENV ICON=${ICON:-} SERVER_ICON=${SERVER_ICON:-}"
 } >> "$LOG_FILE" 2>&1
 
 exit 0

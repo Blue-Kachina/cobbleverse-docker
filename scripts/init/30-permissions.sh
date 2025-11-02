@@ -7,6 +7,15 @@
 
 set -eu
 
+# Ensure we also log to persistent file
+LOG_DIR="/data/logs"
+LOG_FILE="$LOG_DIR/init-hooks.log"
+mkdir -p "$LOG_DIR"
+log() {
+  echo "$1"
+  echo "$1" >> "$LOG_FILE" 2>&1
+}
+
 set_perm_dir() {
   d="$1"
   if [ -d "$d" ]; then
@@ -23,9 +32,9 @@ set_perm_dir() {
           chmod 770 "$d/$sub" 2>/dev/null || true
         fi
       done
-      echo "[init:perms] Ensured restricted permissions on $(basename "$d")"
+      log "[init:perms] Ensured restricted permissions on $(basename \"$d\")"
     else
-      echo "[init:perms] Skipping $d (not writable by current UID)"
+      log "[init:perms] Skipping $d (not writable by current UID)"
     fi
   fi
 }
