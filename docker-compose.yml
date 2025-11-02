@@ -48,7 +48,7 @@ services:
       - "com.cobbleverse.project=mc_cobbleverse"
       - "com.cobbleverse.version=1.0.0"
       - "com.cobbleverse.phase=10"
-    # Uncomment if you want simple health insight later (Phase 7+)
+    # Uncomment if you want simple health insight
     # healthcheck:
     #   test: ["CMD", "/usr/lib/mc-monitor", "status", "--host", "localhost", "--port", "25565"]
     #   interval: 30s
