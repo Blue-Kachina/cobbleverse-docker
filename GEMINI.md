@@ -6,8 +6,6 @@ This project is a Dockerized Cobbleverse modded Minecraft server. It uses the `i
 
 The server is intended to be run using `docker-compose`.
 
-**TODO:** Create a `docker-compose.yml` file. A typical `docker-compose.yml` for this project might look like this:
-
 ```yaml
 version: '3.8'
 services:
@@ -28,16 +26,6 @@ services:
       SPAWN_MONSTERS: "${SPAWN_MONSTERS}"
     volumes:
       - ./data:/data
-```
-
-**TODO:** Create a `.env.example` file with the following content:
-
-```
-SERVER_NAME=Cobbleverse Server
-SERVER_MOTD=Welcome to Cobbleverse!
-DIFFICULTY=normal
-ALLOW_FLIGHT=true
-SPAWN_MONSTERS=true
 ```
 
 Once the `docker-compose.yml` and `.env` files are created, you can run the server with:
