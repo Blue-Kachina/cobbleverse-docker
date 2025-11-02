@@ -57,8 +57,7 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
 | SERVER_WORLDNAME | The name of your Minecraft world | YOUR_WORLDNAME_SHOULD_BE_ONE_WORD |
 | SERVER_NAME | Server name shown in the server browser | Cobbleverse |
 | SERVER_MOTD | Message of the day displayed under the server name | Welcome to Cobbleverse! |
-| SERVER_ICON | URL to an image used as server icon. If ImageMagick is available, it will be converted to a 64x64 PNG automatically; otherwise provide a 64x64 PNG URL. | - |
-| SERVER_ICON_UPDATE | If true, re-downloads the icon on each start | false |
+| SERVER_ICON | Mapped to ICON for the base image to handle. Provide a URL to your icon (ideally a 64x64 PNG). The base image will place it at /data/server-icon.png. | - |
 | RCON_CMDS_STARTUP | Semicolon-separated console commands to run at startup (requires RCON_PASSWORD) | - |
 | ALLOW_FLIGHT | Whether flying is allowed | true |
 | SPAWN_MONSTERS | Whether monsters will spawn | false |

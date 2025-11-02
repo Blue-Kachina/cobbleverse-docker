@@ -104,17 +104,17 @@ Notes:
 
 The Minecraft server expects a 64x64 PNG at /data/server-icon.png.
 
-This repo provides scripts/init/20-server-icon.sh which will (loaded from /data/container-init.d inside the container):
-- Download the image from SERVER_ICON if set to an http(s) URL
-- If ImageMagick is available in the container (magick or convert), convert any image (JPG, etc.) to a 64x64 PNG
-- If ImageMagick is NOT available, the script will only save the file when the URL ends with .png; otherwise it logs a warning and does not overwrite the icon
-
-How to get your icon working:
-- Recommended: Provide a direct URL to a 64x64 PNG (SERVER_ICON=...) and optionally set SERVER_ICON_UPDATE=true once to refresh.
-- Or install ImageMagick in the image variant you use so the script can convert JPGs to PNG.
+Simplified approach (recommended):
+- Set SERVER_ICON to a URL. docker-compose maps SERVER_ICON to ICON for the base itzg/minecraft-server image.
+- The base image will handle fetching and any necessary conversion, placing the result at /data/server-icon.png.
+- Our init hook (scripts/init/20-server-icon.sh) now only logs which icon setting is in effect and defers all work to the base image.
 
 Verify in logs:
-- docker compose logs -f mc and look for lines starting with [init:icon]
-- Examples:
-  - Saved server icon as 64x64 PNG at server-icon.png (conversion succeeded)
-  - WARN: Did not save icon because conversion tools are unavailable and the URL is not a PNG (supply a PNG URL or add ImageMagick)
+- docker compose logs -f mc
+- Look for either of these lines:
+  - [init:icon] ICON is set (…); base image will manage /data/server-icon.png
+  - [init:icon] SERVER_ICON is set (…); compose maps it to ICON and the base image will manage /data/server-icon.png
+
+Notes:
+- Provide a square image (ideally 64x64 PNG) for best results.
+- You can also drop a file at ./data/server-icon.png on the host to override any downloaded icon.
