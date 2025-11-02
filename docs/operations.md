@@ -104,7 +104,7 @@ Notes:
 
 The Minecraft server expects a 64x64 PNG at /data/server-icon.png.
 
-This repo provides scripts/init/20-server-icon.sh which will:
+This repo provides scripts/init/20-server-icon.sh which will (loaded from /data/container-init.d inside the container):
 - Download the image from SERVER_ICON if set to an http(s) URL
 - If ImageMagick is available in the container (magick or convert), convert any image (JPG, etc.) to a 64x64 PNG
 - If ImageMagick is NOT available, the script will only save the file when the URL ends with .png; otherwise it logs a warning and does not overwrite the icon
