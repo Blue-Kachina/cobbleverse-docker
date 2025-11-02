@@ -81,14 +81,14 @@ if [ "$convert_ok" -eq 1 ]; then
   exit 0
 fi
 
-# Fallback: if URL appears to be a PNG, use it as-is; else warn and still copy
+# Fallback: if URL appears to be a PNG, use it as-is; else warn and DO NOT overwrite with a non-PNG
 case "$ICON_URL" in
   *.png|*.PNG)
     mv -f "$TMP_ICON" "$TARGET"
     echo "[init:icon] Saved server icon (assumed PNG) to $(basename "$TARGET")"
     ;;
   *)
-    mv -f "$TMP_ICON" "$TARGET"
-    echo "[init:icon] NOTE: Saved icon without conversion. If the URL isn't a PNG, Minecraft may ignore it. Install ImageMagick in the image to enable auto-conversion."
+    rm -f "$TMP_ICON" 2>/dev/null || true
+    echo "[init:icon] WARN: Did not save icon because conversion tools are unavailable and the URL is not a PNG. Provide a 64x64 PNG URL or install ImageMagick (magick/convert) in the image to enable auto-conversion."
     ;;
 fi

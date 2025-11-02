@@ -78,3 +78,43 @@ Lightweight options:
   - Prometheus exporters (optional) can be added as sidecars if you need metrics scraping.
 
 Security note: treat RCON_PASSWORD as a secret. Avoid committing real credentials to version control. Prefer injecting via environment or a secrets manager in production deployments.
+
+
+## Startup commands (RCON) and gamerules
+
+You can run one-time or recurring console commands automatically at server startup using the itzg/minecraft-server feature RCON_CMDS_STARTUP.
+
+Requirements:
+- Set a non-empty RCON_PASSWORD in .env
+- Define RCON_CMDS_STARTUP in .env as a semicolon-separated list of commands
+- docker-compose.yml passes this value through (already wired in this repo)
+
+Examples:
+- Keep inventory on death:
+  - RCON_CMDS_STARTUP=/gamerule keepInventory true
+- Enable a datapack and set gamerules:
+  - RCON_CMDS_STARTUP=/datapack enable "file/COBBLEVERSE-Sinnoh-DP.zip";/gamerule keepInventory true;/gamerule doImmediateRespawn true
+
+Notes:
+- Commands must start with a slash, just like in-game.
+- They run after the server is up enough to accept console commands.
+- Use semicolons to separate multiple commands; do not include newline characters.
+
+## Server icon troubleshooting
+
+The Minecraft server expects a 64x64 PNG at /data/server-icon.png.
+
+This repo provides scripts/init/20-server-icon.sh which will:
+- Download the image from SERVER_ICON if set to an http(s) URL
+- If ImageMagick is available in the container (magick or convert), convert any image (JPG, etc.) to a 64x64 PNG
+- If ImageMagick is NOT available, the script will only save the file when the URL ends with .png; otherwise it logs a warning and does not overwrite the icon
+
+How to get your icon working:
+- Recommended: Provide a direct URL to a 64x64 PNG (SERVER_ICON=...) and optionally set SERVER_ICON_UPDATE=true once to refresh.
+- Or install ImageMagick in the image variant you use so the script can convert JPGs to PNG.
+
+Verify in logs:
+- docker compose logs -f mc and look for lines starting with [init:icon]
+- Examples:
+  - Saved server icon as 64x64 PNG at server-icon.png (conversion succeeded)
+  - WARN: Did not save icon because conversion tools are unavailable and the URL is not a PNG (supply a PNG URL or add ImageMagick)

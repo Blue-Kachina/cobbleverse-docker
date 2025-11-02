@@ -44,6 +44,7 @@ services:
       STOP_SERVER_ANNOUNCE_DELAY: "${STOP_SERVER_ANNOUNCE_DELAY:-15}"
       # RCON is enabled when a password is provided
       RCON_PASSWORD: "${RCON_PASSWORD:-}"
+      RCON_CMDS_STARTUP: "${RCON_CMDS_STARTUP:-}"
     labels:
       - "org.bluekachina.project=cobbleverse-docker"
       - "org.bluekachina.version=1.0.0"
