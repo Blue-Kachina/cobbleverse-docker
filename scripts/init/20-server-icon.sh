@@ -10,17 +10,35 @@ ICON_URL="${SERVER_ICON:-}"
 FORCE_UPDATE="${SERVER_ICON_UPDATE:-}"
 TARGET="/data/server-icon.png"
 
+# If ICON env is set, let the base image handle downloading/conversion
+if [ -n "${ICON:-}" ]; then
+  echo "[init:icon] ICON env is set; deferring to base image for server icon handling"
+  exit 0
+fi
+
 # No URL provided; exit quietly (but log for transparency)
 if [ -z "$ICON_URL" ]; then
   echo "[init:icon] SERVER_ICON not set; skipping"
   exit 0
 fi
 
-# Only handle http(s) URLs
+# Determine icon source: local file (path or file://) or remote http(s)
+SRC_MODE=""
+SRC_PATH=""
 case "$ICON_URL" in
-  http://*|https://*) ;;
+  file://*)
+    SRC_MODE="local"
+    SRC_PATH="${ICON_URL#file://}"
+    ;;
+  /*|./*|../*)
+    SRC_MODE="local"
+    SRC_PATH="$ICON_URL"
+    ;;
+  http://*|https://*)
+    SRC_MODE="remote"
+    ;;
   *)
-    echo "[init:icon] SERVER_ICON is not an http(s) URL; skipping"
+    echo "[init:icon] SERVER_ICON is not a recognized path or URL; skipping"
     exit 0
     ;;
 esac
@@ -52,14 +70,27 @@ fetch() {
   fi
 }
 
-# Download to a temporary file first to allow conversion/validation
-TMP_ICON="$(mktemp /tmp/server-icon.XXXXXX || echo /tmp/server-icon.$$)"
-if fetch "$ICON_URL" "$TMP_ICON"; then
-  echo "[init:icon] Downloaded server icon to temporary file"
+TMP_ICON=""
+TMP_IS_TEMP=0
+if [ "$SRC_MODE" = "remote" ]; then
+  # Download to a temporary file first to allow conversion/validation
+  TMP_ICON="$(mktemp /tmp/server-icon.XXXXXX || echo /tmp/server-icon.$$)"
+  TMP_IS_TEMP=1
+  if fetch "$ICON_URL" "$TMP_ICON"; then
+    echo "[init:icon] Downloaded server icon to temporary file"
+  else
+    echo "[init:icon] WARN: failed to download SERVER_ICON from $ICON_URL" >&2
+    rm -f "$TMP_ICON" 2>/dev/null || true
+    exit 0
+  fi
 else
-  echo "[init:icon] WARN: failed to download SERVER_ICON from $ICON_URL" >&2
-  rm -f "$TMP_ICON" 2>/dev/null || true
-  exit 0
+  # Local path; use directly
+  if [ ! -f "$SRC_PATH" ]; then
+    echo "[init:icon] WARN: local icon path not found: $SRC_PATH" >&2
+    exit 0
+  fi
+  TMP_ICON="$SRC_PATH"
+  echo "[init:icon] Using local icon: $SRC_PATH"
 fi
 
 # Attempt to normalize to 64x64 PNG using ImageMagick if available
@@ -78,7 +109,7 @@ fi
 
 if [ "$convert_ok" -eq 1 ]; then
   echo "[init:icon] Saved server icon as 64x64 PNG at $(basename "$TARGET")"
-  rm -f "$TMP_ICON" 2>/dev/null || true
+  if [ "$TMP_IS_TEMP" -eq 1 ]; then rm -f "$TMP_ICON" 2>/dev/null || true; fi
   exit 0
 fi
 
@@ -91,8 +122,9 @@ is_png_by_magic() {
 # Fallbacks when conversion tools are unavailable
 if is_png_by_magic "$TMP_ICON"; then
   # We cannot guarantee 64x64 without ImageMagick, but save as-is so at least PNG icons work
-  mv -f "$TMP_ICON" "$TARGET"
+  cp -f "$TMP_ICON" "$TARGET"
   echo "[init:icon] Saved server icon from PNG content to $(basename "$TARGET")"
+  if [ "$TMP_IS_TEMP" -eq 1 ]; then rm -f "$TMP_ICON" 2>/dev/null || true; fi
   exit 0
 fi
 

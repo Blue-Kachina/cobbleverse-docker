@@ -47,6 +47,8 @@ services:
       # RCON is enabled when a password is provided
       RCON_PASSWORD: "${RCON_PASSWORD:-}"
       RCON_CMDS_STARTUP: "${RCON_CMDS_STARTUP:-}"
+      # Map our SERVER_ICON (or leave empty) to the base image's ICON env
+      ICON: "${SERVER_ICON:-}"
     labels:
       - "org.bluekachina.project=cobbleverse-docker"
       - "org.bluekachina.version=1.0.0"
