@@ -12,9 +12,9 @@ services:
     volumes:
       - ./data:/data
       - ./backups:/backups
-      - ./scripts/init:/data/init.d
+      - ./scripts/init:/container-init.d
     # Ensure init scripts are executable (on Windows/WSL the +x bit can be lost)
-    entrypoint: ["/bin/sh", "-c", "chmod +x /data/init.d/* 2>/dev/null || true; exec /start"]
+    entrypoint: ["/bin/sh", "-c", "echo '[compose:init] listing /container-init.d'; ls -la /container-init.d 2>/dev/null || echo '[compose:init] /container-init.d (missing)'; cnt=$$(ls -1 /container-init.d/*.sh 2>/dev/null | wc -l); echo \"[compose:init] found $$cnt .sh files in /container-init.d\"; chmod +x /container-init.d/* 2>/dev/null || true; if [ \"$$cnt\" -gt 0 ]; then for f in /container-init.d/*.sh; do [ -e \"$$f\" ] || continue; echo \"[compose:init] running $$f\"; \"$$f\" || echo \"[compose:init] $$f exited with $$?\"; done; fi; exec /start"]
     env_file:
       - .env
     environment:

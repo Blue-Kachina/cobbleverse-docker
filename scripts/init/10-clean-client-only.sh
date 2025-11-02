@@ -6,6 +6,16 @@
 
 set -eu
 
+# Ensure we also log to persistent file
+LOG_DIR="/data/logs"
+LOG_FILE="$LOG_DIR/init-hooks.log"
+mkdir -p "$LOG_DIR"
+log() {
+  # log to stdout and append to log file
+  echo "$1"
+  echo "$1" >> "$LOG_FILE" 2>&1
+}
+
 MODS_DIR="/data/mods"
 [ -d "$MODS_DIR" ] || exit 0
 
@@ -30,7 +40,7 @@ cleaned=0
 for pattern in $CLIENT_ONLY_PATTERNS; do
   for file in "$MODS_DIR"/$pattern; do
     if [ -f "$file" ]; then
-      echo "[init:client-clean] Removing client-only mod: $(basename "$file")"
+      log "[init:client-clean] Removing client-only mod: $(basename \"$file\")"
       rm -f -- "$file"
       cleaned=$((cleaned+1))
     fi
@@ -38,7 +48,7 @@ for pattern in $CLIENT_ONLY_PATTERNS; do
 done
 
 if [ "$cleaned" -gt 0 ]; then
-  echo "[init:client-clean] Removed $cleaned client-only mod(s)."
+  log "[init:client-clean] Removed $cleaned client-only mod(s)."
 else
-  echo "[init:client-clean] No client-only mods found to remove."
+  log "[init:client-clean] No client-only mods found to remove."
 fi
