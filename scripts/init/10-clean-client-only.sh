@@ -1,8 +1,8 @@
 #!/bin/sh
-# Phase 4 — Client-only mods cleanup
-# This script runs inside the itzg/minecraft-server container on startup
-# via the /data/init hook (mounted from ./scripts/init in docker-compose).
-# It removes known client-only jars that can cause warnings or failures on a headless server.
+# Phase 4 — Client-only mods cleanup (safety net)
+# Runs before the modpack installer populates /data/mods. Primary filtering should be done by setting
+# MODRINTH_EXCLUDE_FILES in .env so client-only mods are never installed. This script is a light safety net
+# that removes any client-only jars that might slip through on subsequent starts when /data/mods exists.
 
 set -eu
 
@@ -17,7 +17,15 @@ log() {
 }
 
 MODS_DIR="/data/mods"
-[ -d "$MODS_DIR" ] || exit 0
+
+# Always log start so users can see this hook ran
+log "[init:client-clean] Starting client-only mods cleanup (mods dir: $MODS_DIR)"
+
+# If mods directory is missing, log and exit instead of being silent
+if [ ! -d "$MODS_DIR" ]; then
+  log "[init:client-clean] Mods directory not present; nothing to clean. Skipping."
+  exit 0
+fi
 
 # Known client-only or client-preference mods included by the pack.
 # Adjust this list as needed for future pack updates.
