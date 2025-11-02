@@ -45,9 +45,9 @@ services:
       # RCON is enabled when a password is provided
       RCON_PASSWORD: "${RCON_PASSWORD:-}"
     labels:
-      - "com.cobbleverse.project=mc_cobbleverse"
-      - "com.cobbleverse.version=1.0.0"
-      - "com.cobbleverse.phase=10"
+      - "org.bluekachina.project=cobbleverse-docker"
+      - "org.bluekachina.version=1.0.0"
+      - "org.bluekachina.phase=10"
     # Uncomment if you want simple health insight
     # healthcheck:
     #   test: ["CMD", "/usr/lib/mc-monitor", "status", "--host", "localhost", "--port", "25565"]
