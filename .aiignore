@@ -1,5 +1,6 @@
 # Sensitive data and credentials
 .env*
+!.env.example
 secrets.json
 *_key.json
 *_credentials.json

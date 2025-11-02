@@ -37,12 +37,8 @@ Thumbs.db
 *.db
 
 # Environment files
-.env
-.env.local
-.env.*.local
-.env.development
-.env.test
-.env.production
+.env*
+!.env.example
 
 # Coverage and test reports
 /coverage/
