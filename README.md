@@ -1,6 +1,8 @@
 # Docker Cobbleverse Server
 
-A streamlined solution for running a Cobbleverse modded Minecraft server using Docker. This project provides an easy way to set up and manage a Cobbleverse server while handling the complexity of mod management and server configuration.
+A streamlined solution for running a Cobbleverse modded Minecraft server using Docker. 
+It manages the timely installation of the mods/packs prior to world generation.
+Has auto-backup capabilities too
 
 ## Features
 
@@ -35,7 +37,7 @@ A streamlined solution for running a Cobbleverse modded Minecraft server using D
    - Set `SERVER_WORLDNAME` to your desired world name
    - Configure `SERVER_NAME` and `SERVER_MOTD` to personalize your server
    - Adjust other settings as needed
-   - Optionally set `MEMORY=6G` (or 8G) depending on your host; default is 6G in compose
+   - Optionally set `MEMORY=8G` (you can use other values, but I think it has to be at least 6G) depending on your host; default is 8G in compose
 
 4. Start the server:
    ```bash
