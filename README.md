@@ -38,6 +38,8 @@ Has auto-backup capabilities too
    - Configure `SERVER_NAME` and `SERVER_MOTD` to personalize your server
    - Adjust other settings as needed
    - Optionally set `MEMORY=8G` (you can use other values, but I think it has to be at least 6G) depending on your host; default is 8G in compose
+   - Optionally set `RCON_PASSWORD`.  Without it, backups won't work.  The startup RCON commands can't be used without it either
+   - Optionally set `OPS=`.  I like making sure that at very least my own account will have op rights
 
 4. Start the server:
    ```bash
