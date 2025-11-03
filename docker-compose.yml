@@ -100,5 +100,5 @@ services:
     volumes:
       - ./backups:/backups
       - ./scripts:/scripts:ro
-    entrypoint: ["/bin/sh", "-c", "chmod +x /scripts/prune-backups.sh 2>/dev/null || true; while true; do /scripts/prune-backups.sh; sleep 60; done"]
+    entrypoint: ["/bin/sh", "-c", "while true; do /bin/sh /scripts/prune-backups.sh; sleep 60; done"]
 
