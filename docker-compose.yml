@@ -86,3 +86,19 @@ services:
       - ./data:/data:ro
       - ./backups:/backups
 
+  mc-backup-prune:
+    image: alpine:3.20
+    container_name: "${SERVER_NAME:-cobbleverse-server-backup}-pruner"
+    restart: unless-stopped
+    depends_on:
+      - mc-backup
+    env_file:
+      - .env
+    environment:
+      TZ: "${TZ:-UTC}"
+      BACKUP_MAX_BACKUPS: "${BACKUP_MAX_BACKUPS:-0}"
+    volumes:
+      - ./backups:/backups
+      - ./scripts:/scripts:ro
+    entrypoint: ["/bin/sh", "-c", "chmod +x /scripts/prune-backups.sh 2>/dev/null || true; while true; do /scripts/prune-backups.sh; sleep 60; done"]
+

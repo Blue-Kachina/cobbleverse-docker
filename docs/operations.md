@@ -8,8 +8,9 @@ Date: 2025-11-01
 
 This repository enables automated backups using a lightweight sidecar container (itzg/mc-backup). Backups are stored under ./backups on the host and rotated based on retention.
 
-- Schedule: configurable via BACKUP_INTERVAL in .env (default 24h)
-- Retention: configurable via BACKUP_PRUNE_DAYS in .env (default 14 days)
+- Schedule: configurable via BACKUP_INTERVAL in .env (default 24h). Supports minutes granularity like 15m.
+- Time-based retention: configurable via BACKUP_PRUNE_DAYS in .env (default 14 days).
+- Count-based retention: optional BACKUP_MAX_BACKUPS in .env (default 0 = disabled). When set > 0, a small pruner sidecar deletes the oldest archives if the number of backups exceeds the limit. The pruner checks roughly every 60 seconds.
 - Location: backups directory at the repository root (mounted to /backups in the backup sidecar)
 - Content: the entire /data directory (world, configs, mods) is archived as tar files
 
