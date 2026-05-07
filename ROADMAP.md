@@ -11,11 +11,9 @@ This roadmap breaks the work into clear, AI‑sized phases with crisp deliverabl
   - Identify what is server‑relevant vs. client‑only.
 - Inputs observed in repo
   - `.env.example`
-    - `MODRINTH_URL=https://cdn.modrinth.com/data/Jkb29YJU/versions/DrJAo7Hk/COBBLEVERSE%201.6.mrpack`
+    - `MODRINTH_MODPACK` pinned to the current Cobbleverse `.mrpack` (see `.env.example`; default **1.7.31**)
     - `SERVER_WORLDNAME`, `SERVER_NAME`, `SERVER_MOTD`, `SERVER_ICON`, `ALLOW_FLIGHT`, `SPAWN_MONSTERS`
-  - Dev resources folder
-    - `.mrpack`: `resources\dev\COBBLEVERSE 1.6.mrpack`
-    - Unzipped contents: `resources\dev\unzipped` (expanded for visibility)
+  - Optional local dev resources (if present): `.mrpack` under `resources/dev/` and unzipped index for inspection
       - `modrinth.index.json` (2,500+ lines) including:
         - Many `mods/...jar` entries with `env.client`/`env.server` flags
         - Resource packs referenced in the modpack index:
@@ -27,7 +25,7 @@ This roadmap breaks the work into clear, AI‑sized phases with crisp deliverabl
         - `overrides\resourcepacks\COBBLEVERSE Soundtrack.zip` (client resource pack; optionally distributed)
         - `overrides\shaderpacks\Shaders - HIGH QUALITY\...` and `Shaders - STANDARD\...` (client‑only)
 - Assumptions
-  - We will use the `itzg/minecraft-server` image with Modrinth modpack install via `MODRINTH_URL` (supported by the image).
+  - We will use the `itzg/minecraft-server` image with Modrinth modpack install via `MODRINTH_MODPACK` / related Modrinth env vars (supported by the image).
   - The image will handle downloading and installing the Modrinth pack and applying overrides to the server directory. Client‑only content (shaderpacks, most resource pack behavior) will not affect headless server execution but may be used for client distribution.
 - Acceptance criteria
   - Inventory documented (above). Open questions captured for later phases.
@@ -42,13 +40,13 @@ Open questions to confirm later
 
 - Tasks
   - Create `docker-compose.yml` with:
-    - Image: `itzg/minecraft-server:latest`
+    - Image: `itzg/minecraft-server:java21` (pinned; newer JVMs can break Cobblemon Showdown / Graal paths)
     - Volumes: `./data:/data` (persistent world and config), optional `./backups:/backups`
     - Ports: `25565:25565`
     - Env file: `.env`
     - Memory limits per `.env` and host capacity (recommend 6–8 GB for Cobblemon‑heavy packs)
     - `EULA=TRUE`
-    - `TYPE=FABRIC` or `TYPE=QUILT` (match the pack; Cobbleverse 1.6 appears Fabric)
+    - `TYPE=MODRINTH` with `MODRINTH_MODPACK` / Modrinth vars (Cobbleverse is Fabric-based)
     - `USE_AIKAR_FLAGS=true` or JVM tuning vars
   - Ensure `.gitignore` excludes `data`, `backups`, and local dev resources.
 - Deliverables
@@ -154,7 +152,7 @@ Open questions to confirm later
     - Enable image backup features (`ENABLE_ROLLING_LOGS`, `BACKUP_INTERVAL`, or external cron/compose sidecar using `itzg/mc-backup`).
     - Store backups under `./backups` with rotation policy.
   - Updates:
-    - Pin `MODRINTH_URL` to specific version (already 1.6) and document update procedure (test on a staging world, then promote).
+    - Pin `MODRINTH_MODPACK` to a specific `.mrpack` (default **1.7.31**); optional auto-latest is documented in `.env.example` but not recommended for production. Document update procedure (test on a staging world, then promote).
     - Set `STOP_SERVER_ANNOUNCE_DELAY` for graceful restarts via RCON.
   - Monitoring and access:
     - Enable `RCON_PASSWORD` and use `itzg/mc-monitor` or Prometheus exporter sidecar.

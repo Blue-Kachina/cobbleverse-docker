@@ -2,7 +2,7 @@
 # Version: 1.0.0 (2025-11-01)
 services:
   mc:
-    image: itzg/minecraft-server:latest
+    image: itzg/minecraft-server:java21
     container_name: "${SERVER_NAME:-cobbleverse-server-mc}-mc"
     restart: unless-stopped
     ports:

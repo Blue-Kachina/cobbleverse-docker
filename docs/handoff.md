@@ -5,7 +5,7 @@ Audience: New operators who need to stand up and run the Cobbleverse server with
 
 ## 0) What you’re getting
 - Dockerized Cobbleverse (Fabric) Minecraft server based on itzg/minecraft-server
-- Automated Modrinth pack install (COBBLEVERSE 1.6)
+- Automated Modrinth pack install (pinned Cobbleverse; default **1.7.31** in `.env.example`)
 - Init hooks for client-only mod cleanup, server icon, and permissions hardening
 - Backups sidecar with retention
 - Clear environment-driven configuration
@@ -23,7 +23,7 @@ Audience: New operators who need to stand up and run the Cobbleverse server with
 3. Edit .env:
    - SERVER_WORLDNAME=YOUR_WORLD
    - SERVER_NAME/MOTD to taste
-   - Ensure MODRINTH_MODPACK points to COBBLEVERSE 1.6 (already set)
+   - Ensure `MODRINTH_MODPACK` matches the Cobbleverse version you want (default **1.7.31** URL in `.env.example`)
    - MEMORY=8G (or adjust)
    - Optional: OPS/WHITELIST, TZ, UID/GID
 4. Start server: `docker compose up -d`

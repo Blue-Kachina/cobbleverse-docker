@@ -10,7 +10,8 @@ Has auto-backup capabilities too
 - Automated mod management
 - Configurable server settings via environment variables
 - Persistent world data
-- Based on the reliable `itzg/minecraft-server` image
+- Based on the reliable `itzg/minecraft-server` image, pinned to **Java 21** (`java21` tag). Newer Java versions can break Cobblemon Showdown / GraalVM startup paths used by the pack.
+- **Modpack:** defaults to a **pinned** Cobbleverse **1.7.31** `.mrpack` URL in `.env.example`. Players should install the **same Cobbleverse version** as the server. An optional **auto-latest** Modrinth mode is documented in `.env.example` (commented); it is **not recommended** for stable servers because automatic pack bumps can mismatch clients or strain existing worlds.
 
 ## Prerequisites
 
@@ -34,6 +35,8 @@ Has auto-backup capabilities too
    ```
 
 3. Edit the `.env` file with your preferred settings:
+   - Ensure your **client** Cobbleverse install matches the server (default **1.7.31** while using the pinned `.mrpack` in `.env.example`)
+   - Prefer the **pinned** `MODRINTH_MODPACK` URL for predictable upgrades; only switch to the commented **auto-latest** block if you accept the trade-offs called out in `.env.example`
    - Set `SERVER_WORLDNAME` to your desired world name
    - Configure `SERVER_NAME` and `SERVER_MOTD` to personalize your server
    - Adjust other settings as needed

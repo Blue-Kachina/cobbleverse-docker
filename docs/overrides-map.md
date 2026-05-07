@@ -6,7 +6,7 @@ This document explains how the modpack’s overrides are applied to the running 
 
 ## How overrides are applied
 
-- The Modrinth pack (COBBLEVERSE 1.6) contains an `overrides/` directory. During install, the itzg/minecraft-server Modrinth installer copies these into `/data`.
+- The Modrinth Cobbleverse pack contains an `overrides/` directory. During install, the itzg/minecraft-server Modrinth installer copies these into `/data`.
 - Relevant locations after install:
   - `/data/config/...` — mod configuration files from `overrides/config/...`
   - `/data/datapacks/...` — pack-level datapacks; some installers place them here before a world exists

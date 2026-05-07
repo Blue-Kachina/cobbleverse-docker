@@ -45,7 +45,7 @@ If the server reaches "Done" and your world loads, restore is successful.
 
 ## Updates
 
-The modpack URL is pinned to a specific version (COBBLEVERSE 1.6). Follow a staged approach to update:
+The modpack URL is pinned to a specific Cobbleverse release (default **1.7.31** in `.env.example`). Follow a staged approach to update:
 
 1) Staging world/test:
    - Make a copy of the whole repo to a staging folder or use a separate compose project name.
